@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SensorBasics</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="Sensor_Info">Sensor Information</string>
+    <string name="edit_message">Enter Text Here</string>
+    <string name="Acce_Info">Accelerometer Information</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_sensor">SensorActivity</string>
+    <string name="title_activity_sensor_detail">SensorDetail</string>
+    <string name="title_activity_acc_meter__out">AccMeter_Out</string>
+    <string name="X_acc_raw">Acceletaion X axis: </string>
+    <string name="Y_acc_raw">Acceletaion Y axis: </string>
+    <string name="Z_acc_raw">Acceletaion Z axis: </string>
+    <string name="X_acc_linear">Linear Acceletaion X axis: </string>
+    <string name="Y_acc_linear">Linear Acceleartion Y axis: </string>
+    <string name="Z_acc_linear">Linear Acceleration Z axis: </string>
+    <string name="action_log">Log</string>
+       
+
+</resources>
