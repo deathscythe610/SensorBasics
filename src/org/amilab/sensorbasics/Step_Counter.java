@@ -1,17 +1,33 @@
 package org.amilab.sensorbasics;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import android.content.Context;
 import android.widget.Toast;
 
 
 public class Step_Counter {
+	public enum STATES{
+		IDLE, MAX_DETECT, MIN_DETECT, AFTER_MAX_DETECT, AFTER_MIN_DETECT, MIN_STEP_DELAY
+	}
+	private STATES state = STATES.IDLE;
+	
+	private int azHistory_Size = 2;
 	private boolean IsCheckMode =false;
 	private boolean IsStep = false;
 	private float positive_uthreshold = 0.8f;
 	private float negative_uthreshold = -0.1f;
 	private float positive_lthreshold = 0.1f;
 	private float negative_lthreshold  = -0.8f;
-	private float prev_data = 0f;
+	private int step_delay = 150;			//Minimum time after second half step is detected to return to IDLE state
+	private int step_wait_max = 400;		//Maximum time wait after first half step is detected
+	private int step_wait_min = 100;		//Minimum time wait after first half step is detected 
+	private float lastMaximum = 0;
+	private float lastMinimum = 0;
+	private int laststeptime = 0;
+	
+	private float azHistory[] = new float[azHistory_Size];
 	private Float DataGap = Float.valueOf(0f);
 	private Context mContext;
 	private double StrideLenght ;
@@ -32,32 +48,17 @@ public class Step_Counter {
 	 * @param measured_data
 	 * @return IsStep
 	 */
-	private boolean CheckStep(float measured_data){
-		//Ignore the acceleration data of current check if previous check mark a step
-		if (IsStep){
-			IsStep = false;
+	private boolean CheckStep(float az, int triggertime){
+		if (az>lastMaximum)
+			lastMaximum =az;
+		if (az<lastMinimum)
+			lastMinimum = az;
+		switch(this.state){
+			case IDLE:
+				this.lastMaximum = 0;
+				this.lastMinimum = 0;
+				if ((triggertime - this.laststeptime)>step
 		}
-		else {
-		difference = measured_data-prev_data;
-		if(prev_data!=0){
-			//If System has not detect a up rise, check if there is an up rise in data
-			if (!IsCheckMode){
-				if ((difference>positive_lthreshold) && (difference<positive_uthreshold)){
-					IsCheckMode = true;
-				}	
-			}
-			//If the System is already in CheckMode, check if next change is a down turn or not
-			else{
-				if ((difference>negative_lthreshold) && (difference<negative_uthreshold)){
-					IsStep=true;
-				}
-				//Toast.makeText(mContext, String.valueOf(difference), Toast.LENGTH_SHORT).show();
-				//Get out of CheckMode to wait for another uprise
-				IsCheckMode = false;
-			}
-		}
-		}
-		prev_data = measured_data;
 		return IsStep;
 	}
 	//This function invoke CheckStep to see if there is a step made by user, if yes add the step number by 1 
@@ -78,7 +79,14 @@ public class Step_Counter {
 	}
 	public void GetStrideLenght(){
 		DataGap = Math.abs(difference);
-		StrideLenght = Math.sqrt(Math.sqrt((DataGap).doubleValue()));  
+		StrideLenght = round(Math.sqrt(Math.sqrt((DataGap).doubleValue())), 2);  
+	}
+	public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    BigDecimal bd = new BigDecimal(value);
+	    bd = bd.setScale(places, RoundingMode.HALF_UP);
+	    return bd.doubleValue();
 	}
 	
 }

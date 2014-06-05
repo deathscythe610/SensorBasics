@@ -192,7 +192,14 @@ public class AccMeter_Out extends ListActivity implements SensorEventListener, R
 		case R.id.action_log:
 			startDataLog();
 			return true;
-
+		//Reset step count
+		case R.id.action_resetStep:
+			counter.ResetStep();
+			DistanceTraveled = 0;
+			StrideLength = 0;
+			Acc_Reading.set(4, "Last Stride Length: " + StrideLength);
+			Acc_Adapter.notifyDataSetChanged();
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -273,6 +280,7 @@ public class AccMeter_Out extends ListActivity implements SensorEventListener, R
 	}
 	
 	
+	
 	/**
 	 * The log runs on its own thread in order to keep the UI from Hanging and the output smooth
 	 * Step Count also run in 100 ms frequency in order to track great change in acceleration 
@@ -282,7 +290,7 @@ public class AccMeter_Out extends ListActivity implements SensorEventListener, R
 	{
 		handler.postDelayed(this, 100);
 		StrideLength = counter.Stepcount(global_acceleration[2]);
-		DistanceTraveled += StrideLength; 
+		DistanceTraveled = Step_Counter.round(DistanceTraveled + StrideLength, 2); 
 		Acc_Reading.set(3,  "Step counted: " + counter.stepcount);
 		//Keep the result of last stride length on screen 
 		if (StrideLength!=0) Acc_Reading.set(4, "Last Stride Length: " + StrideLength);
@@ -290,6 +298,11 @@ public class AccMeter_Out extends ListActivity implements SensorEventListener, R
 		Acc_Adapter.notifyDataSetChanged();
 		logData();
 	}
+	
+	
+	/**
+	 * THIS FUNCTION INITIALIZE THE WRITE LOG PROCESS AND ADD HEADERS TO THE LOG FILES
+	 */
 	
 	private void startDataLog()
 	{
@@ -354,6 +367,9 @@ public class AccMeter_Out extends ListActivity implements SensorEventListener, R
 		}
 	}
 
+	/**
+	 * THIS FUNCTION IS CALLED EVERY 100MS TO LOG DOWN ALL INFORMATION IF LOG OPTION IS ON
+	 */
 	private void logData()
 	{
 		if (logData)
@@ -393,7 +409,7 @@ public class AccMeter_Out extends ListActivity implements SensorEventListener, R
 	}
 	
 	/**
-	 * Write the logged data out to a persisted file.
+	 * WRITE LOG FILE TO /DEFAULT_MEMORY_LOCATION/Log 
 	 */
 	private void writeLogToFile()
 	{

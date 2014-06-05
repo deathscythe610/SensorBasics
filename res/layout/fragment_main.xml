@@ -23,5 +23,5 @@
 	    android:layout_alignParentRight="true"
 	    android:layout_below="@id/edit_message"
 	    android:onClick="openAcce"
-	    android:text="@string/Acce_Info" />
+	    android:text="@string/StepDetector" />
 </RelativeLayout>

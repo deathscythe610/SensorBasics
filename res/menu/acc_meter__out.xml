@@ -12,5 +12,9 @@
         android:icon="@drawable/ic_action_log"
         android:title="@string/action_log"
         android:showAsAction="ifRoom" />
-
+    <item 
+        android:id="@+id/action_resetStep"
+        android:icon="@drawable/ic_action_reset"
+        android:title="@string/action_resetStep"
+        android:showAsAction="ifRoom" />
 </menu>
